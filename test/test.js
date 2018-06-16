@@ -33,6 +33,7 @@ describe('server', function() {
 
         // Create or clear the file.
         var fd = fs.openSync(fixturePath, 'w');
+        
         fs.writeSync(fd, 'google');
         fs.closeSync(fd);
 
@@ -93,7 +94,6 @@ describe('archive helpers', function() {
     it('should check if a url is in the list', function (done) {
       var urlArray = ['example1.com', 'example2.com'];
       fs.writeFileSync(archive.paths.list, urlArray.join('\n'));
-
       var counter = 0;
       var total = 2;
 
@@ -101,7 +101,6 @@ describe('archive helpers', function() {
         expect(exists).to.be.true;
         if (++counter === total) { done(); }
       });
-
       archive.isUrlInList('gibberish', function (exists) {
         expect(exists).to.be.false;
         if (++counter === total) { done(); }
@@ -126,7 +125,7 @@ describe('archive helpers', function() {
   describe('#isUrlArchived', function () {
     it('should check if a url is archived', function (done) {
       fs.writeFileSync(archive.paths.archivedSites + '/www.example.com', 'blah blah');
-
+       
       var counter = 0;
       var total = 2;
 
@@ -146,9 +145,10 @@ describe('archive helpers', function() {
     it('should download all pending urls in the list', function (done) {
       var urlArray = ['www.example.com', 'www.google.com'];
       archive.downloadUrls(urlArray);
-
       // Ugly hack to wait for all downloads to finish.
       setTimeout(function () {
+        // console.log(fs.readdirSync(archive.paths.archivedSites));
+        
         expect(fs.readdirSync(archive.paths.archivedSites)).to.deep.equal(urlArray);
         done();
       }, 500);
